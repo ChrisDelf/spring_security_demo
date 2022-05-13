@@ -1,0 +1,10 @@
+server:
+  port: 9000
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/musicdb
+    username: postgres
+    password: derpo
+
+  jpa:
+    show-sql: true
