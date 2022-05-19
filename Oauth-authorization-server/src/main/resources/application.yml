@@ -1,10 +1,9 @@
-server:
-  port: 9000
-
+spring:
+  server:
+    port: 9000
   datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/musicdb
     username: postgres
     password: derpo
-
-  jpa:
-    show-sql: true
+    pool-size: 30
