@@ -5,10 +5,14 @@ import com.cdelf.oauthserver.entity.User;
 import com.cdelf.oauthserver.exceptions.ResourceFoundException;
 import com.cdelf.oauthserver.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User addUser(User user) {
 
-        if (userRepo.findByusername(user.getUsername()) != null) {
+        if (userRepo.findByUsername(user.getUsername()) != null) {
             throw new ResourceFoundException(user.getUsername() + "is already taken!");
         }
 
@@ -76,5 +80,33 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException(id + " Not current user");
         }
 
+    }
+
+    @Transactional
+    @Override
+    public UserDetails findByUserName(String username) throws ResourceNotFoundException {
+        User user = userRepo.findByUsername(username);
+        if (user == null)
+        {
+            throw new ResourceNotFoundException(username + " not found");
+        }
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                true,
+                true,
+                true,
+                true,
+                getAuthorities(user.getUser_roles()));
+
+
+    }
+
+    private Collection<? extends GrantedAuthority> getAuthorities(List<String> roles) {
+        List<GrantedAuthority>  authorities = new ArrayList<>();
+        for(String role: roles) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return authorities;
     }
 }
