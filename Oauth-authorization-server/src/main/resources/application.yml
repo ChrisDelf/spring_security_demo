@@ -1,6 +1,7 @@
+server:
+  port: 9080
+
 spring:
-  server:
-    port: 9000
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/musicdb
